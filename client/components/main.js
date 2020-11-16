@@ -6,6 +6,7 @@ import Card from './comp/card'
 import Currency from './comp/currency'
 import Sort from './comp/sort'
 import OrderCount from './comp/order-count'
+import Basket from './comp/basket'
 
 const Main = () => {
   return (
@@ -16,6 +17,7 @@ const Main = () => {
       <Currency />
       <Sort />
       <OrderCount />
+      <Basket />
     </div>
   )
 }
