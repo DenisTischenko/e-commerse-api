@@ -1,7 +1,7 @@
 import React from 'react'
 
 const buttonsStyle =
-  'mx-2 px-3 py-2 bg-gray-500 rounded-md w-40 text-white text-center focus:outline-none hover:bg-gray-700 '
+  'mx-2 px-3 py-2 bg-gray-500 rounded-md w-40 text-white text-center focus:outline-none transition duration-300 ease-in-out hover:bg-gray-700 '
 
 const Sort = (props) => {
   const onClick = () => {
