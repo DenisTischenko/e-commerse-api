@@ -1,23 +1,31 @@
-import React from 'react'
-import Head from './head'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Header from './header'
 import Card from './comp/card'
-import Currency from './comp/currency'
-import Sort from './comp/sort'
-import OrderCount from './comp/order-count'
-import Basket from './comp/basket'
+import { getData } from '../redux/reducers/data'
 
 const Main = () => {
+  const listOfData = useSelector((store) => store.data.listOfData.slice(0, 8))
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getData())
+    return () => {}
+  }, [])
+
   return (
     <div>
-      <Head />
       <Header />
-      <Card />
-      <Currency />
-      <Sort />
-      <OrderCount />
-      <Basket />
+      <div className="Cardplace  grid grid-cols-4">
+        {listOfData.map((item) => {
+          return (
+            <div key={item.id}>
+              <Card data={item} />
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

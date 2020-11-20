@@ -10,21 +10,9 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
+const { readFile } = require ('fs').promises
+
 const Root = () => ''
-
-try {
-  // eslint-disable-next-line import/no-unresolved
-  // ;(async () => {
-  //   const items = await import('../dist/assets/js/root.bundle')
-  //   console.log(JSON.stringify(items))
-
-  //   Root = (props) => <items.Root {...props} />
-  //   console.log(JSON.stringify(items.Root))
-  // })()
-  console.log(Root)
-} catch (ex) {
-  console.log(' run yarn build:prod to enable ssr')
-}
 
 let connections = []
 
@@ -40,6 +28,13 @@ const middleware = [
 ]
 
 middleware.forEach((it) => server.use(it))
+
+server.get('/api/v1/data', async(req, res) => {
+  const readData = await readFile(`${__dirname}/data/data.json`, { encoding: 'utf8' })
+    .then((it) => JSON.parse(it))
+    .catch(() => ({ data: 'Sorry, not available' }))
+    res.json(readData)
+})
 
 server.use('/api/', (req, res) => {
   res.status(404)
