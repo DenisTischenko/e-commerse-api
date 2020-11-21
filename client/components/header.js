@@ -11,7 +11,7 @@ const Header = () => {
         id="BrandName"
         className="text-white text-center text-3xl font-bold transition duration-300 ease-in-out hover:text-gray-700"
       >
-        <Link to="/"> =Logogoo=</Link>
+        <Link to="/">=Logogo=</Link>
       </div>
       <div className="Currency grid col-span-2">
         <Currency />
