@@ -1,11 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 const OrderCount = () => {
+  const { count, totalPrice } = useSelector((store) => store.basket)
+  const currency = useSelector((it) => it.data.currency)
+  const rate = useSelector((it) => it.data.rates[it.data.currency])
+  const actualCurrency = (totalPrice * rate).toFixed(2)
   return (
-    <div className="OrderCount grid w-auto h-8">
-      <div className="total justify-self-center text-center text-2xl font-bold p-2">
-        Total items in card: XXX
+    <div className="OrderCount  grid grid-cols-2 text-xl text-white font-bold">
+      <div className="total py-1">
+        Total items: {actualCurrency} {currency}
       </div>
+      <div className="count py-1 bg-gray-700 text-center rounded-md w-20">{count}</div>
     </div>
   )
 }

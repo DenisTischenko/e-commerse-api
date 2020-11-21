@@ -1,8 +1,10 @@
 import React from 'react'
+import Header from '../header'
 
 const Basket = () => {
   return (
     <div className="basket">
+      <Header />
       <div className="product__image">image</div>
       <div className="product__title">title</div>
       <div className="product__price">price</div>
