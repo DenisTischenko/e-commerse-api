@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { setCurrency } from '../../redux/reducers/data'
 
 const buttonsStyle =
-  'mx-2 px-3 py-2 bg-gray-500 rounded-md w-32 text-white text-center focus:outline-none transition duration-300 ease-in-out hover:bg-gray-700'
+  'mx-2 py-3 bg-gray-500 rounded-md w-32 text-white text-center align-middle focus:outline-none transition duration-300 ease-in-out hover:bg-gray-700'
 
 const Currency = () => {
   const dispatch = useDispatch()
