@@ -6,10 +6,10 @@ import OrderCount from './details/order-count'
 
 const Header = () => {
   return (
-    <div className="grid grid-cols-4 bg-gray-600 p-5">
+    <div className="grid grid-cols-4 bg-gray-600 py-6">
       <div
         id="BrandName"
-        className="text-white text-center align-middle text-3xl font-bold transition duration-300 ease-in-out hover:text-gray-700"
+        className="text-white text-center text-3xl font-bold transition duration-300 ease-in-out hover:text-gray-700"
       >
         <Link to="/"> =Logogo=</Link>
       </div>
@@ -19,7 +19,7 @@ const Header = () => {
       <div className="Sort">
         <Sort />
       </div>
-      <div className="OrderCount text-center">
+      <div className="OrderCount grid place-items-center text-center">
         <OrderCount />
       </div>
     </div>

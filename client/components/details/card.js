@@ -12,12 +12,11 @@ const Card = (props) => {
   const amount = typeof count === 'undefined' ? '' : count.count
 
   return (
-    <div className="cardmain grid bg-gray-300">
+    <div className="card_main grid bg-gray-300">
       <div className="card  bg-gray-400 rounded-lg m-4 text-center p-4">
-        <div className="card__image ">
-          <img className="images w-full object-cover h-40" src={data.image} alt={data.title} />
-        </div>
+        <img className="images w-full object-cover h-40" src={data.image} alt={data.title} />
         <div className="title  text-3xl p-4 rounded-md text-gray-600 ">{data.title}</div>
+
         <div className="card_title_price  grid grid-cols-2 p-4">
           <div className="price  text-2xl px-2 justify-self-end">{actualCurrency}</div>
           <div className="currency  text-2xl px-2 justify-self-start">{currency}</div>
@@ -31,7 +30,7 @@ const Card = (props) => {
           >
             Add
           </button>
-          <div className="card__product-amount p-2 grid bg-gray-300 justify-self-end text-2xl text-gray-600 text-center font-bold border-2 border-solid border-gray-600 rounded-full w-16 h-16">
+          <div className="card__product-amount  grid place-items-center bg-gray-300 justify-self-end text-3xl text-gray-600 text-center font-bold border-2 border-solid border-gray-600 rounded-full w-16 h-16">
             {amount}
           </div>
         </div>

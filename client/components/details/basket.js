@@ -1,34 +1,99 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Header from '../header'
+import { updateCount } from '../../redux/reducers/basket'
 
 const Basket = () => {
+  const dispatch = useDispatch()
   const cardItems = useSelector((store) => store.basket.basket)
-  const { totalPrice } = useSelector((store) => store.basket)
+  const { totalPrice, count } = useSelector((store) => store.basket)
   const currency = useSelector((it) => it.data.currency)
   const rate = useSelector((it) => it.data.rates[it.data.currency])
-  const actualCurrency = (totalPrice * rate).toFixed(2)
+  const actualPrice = totalPrice * rate
+
+  const onClick = (item, change) => {
+    if (change === '+') {
+      return () => dispatch(updateCount(item.id, '+'))
+    }
+      return () => dispatch(updateCount(item.id, '-'))
+  }
 
   return (
-    <div className="basket_main">
+    <div className="basket_main grid">
       <Header />
       <div>
-        {cardItems.map((item) => {
+        <div className="Titles_card grid grid-cols-6  bg-gray-500 font-bold text-xl py-4 text-white text-center">
+          <div className="# border-r-2 border-white">#</div>
+          <div className="Title__image border-r-2 border-white">Image</div>
+          <div className="Title__title border-r-2 border-white">Title</div>
+          <div className="Title__price border-r-2 border-white">Price</div>
+          <div className="Title__amount border-r-2 border-white">Amount</div>
+          <div className="Title__amount">Total</div>
+        </div>
+
+        {Object.keys(cardItems).map((item) => {
           return (
             <div key={item.id}>
-              <img className="product__image" src={item.image} alt={item.title}/>
-              <div className="product__title">{item.title}</div>
-              <div className="product__price">{item.price} {currency}</div>
-              <div className="product__amount">On the card: {item.count}</div>
-              <div className="product__total_price">Total sum: {actualCurrency} {currency}</div>
+              <div className="grid grid-cols-6 bg-gray-200 font-bold text-xl py-2 my-2 text-gray-700 text-center">
+                <div className="# grid place-items-center">#</div>
+
+                <div className="Image ">
+                  <img
+                    className="product__image justify-self-center w-full object-cover h-40"
+                    src={cardItems[item].image}
+                    alt={cardItems[item].title}
+                  />
+                </div>
+
+                <div className="Title grid place-items-center border-r-2 border-white">
+                  <div className="product__title">{cardItems[item].title}</div>
+                </div>
+
+                <div className="Price grid place-items-center border-r-2 border-white">
+                  <div className="product__price">
+                    {(cardItems[item].price * rate).toFixed(2)} {currency}
+                  </div>
+                </div>
+
+                <div className="Amount grid place-items-center border-r-2 border-white">
+                  <div className="product__amount">
+                    <button
+                      type="button"
+                      className="button__add font-bold text-2xl px-2 text-gray-700 focus:outline-none"
+                      onClick={onClick(cardItems[item], '+')}
+                    >
+                      +
+                    </button>
+                    {typeof cardItems[item] === 'undefined' ? 0 : cardItems[item].count}
+                    <button
+                      type="button"
+                      className="button__take font-bold text-2xl px-2 text-gray-700 focus:outline-none"
+                      onClick={onClick(cardItems[item], '-')}
+                    >
+                      -
+                    </button>
+                  </div>
+                </div>
+
+                <div className="Total grid place-items-center ">
+                  <div className="product__total_price">
+                    {(cardItems[item].price * cardItems[item].count * rate).toFixed(2)} {currency}
+                  </div>
+                </div>
+              </div>
             </div>
           )
         })}
+        <button type="button" className="product__remove">
+          Remove
+        </button>
+
+        <div id="total-amount">total-amount: {count}</div>
+
+        <div id="total-price">
+          total-price: {actualPrice.toFixed(2)} {currency}
+        </div>
       </div>
-      <button type="button" className="product__remove">
-        Remove
-      </button>
-      <div id="total-amount">total-amount</div>
     </div>
   )
 }

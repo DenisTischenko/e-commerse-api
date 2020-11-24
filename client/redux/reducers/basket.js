@@ -1,4 +1,5 @@
 const ADD_TO_BASKET = 'ADD_TO_BASKET'
+const UPDATE_COUNT = 'UPDATE_COUNT'
 
 const initialState = {
   basket: [],
@@ -16,9 +17,9 @@ const setCount = (products) => {
 
 const sumOfItems = (basket) => {
   if (typeof basket !== 'undefined') {
-  return Object.keys(basket).reduce((acc, rec) => acc + basket[rec].count, 0)
-}
- return 0
+    return Object.keys(basket).reduce((acc, rec) => acc + basket[rec].count, 0)
+  }
+  return 0
 }
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -36,16 +37,38 @@ export default (state = initialState, action) => {
         count: sumOfItems(state.basket) + 1
       }
     }
+    case UPDATE_COUNT: {
+      return {
+        ...state,
+        basket: {
+          ...state.basket,
+          [action.id]: {
+            ...state.basket[action.id],
+            count: state.basket[action.id].count + action.payload
+          }
+        }
+      }
+    }
     default:
       return state
   }
 }
 
 export function addToBasket(item) {
-  return (dispatch) => {
-    dispatch({
-      type: ADD_TO_BASKET,
-      item
-    })
+  return ({ type: ADD_TO_BASKET, item })
+}
+
+export function updateCount(id, change) {
+  let payload = 0
+  if (change === '+') {
+    payload = 1
   }
+  if (change === '-') {
+    payload = -1
+  }
+  return ({
+    type: UPDATE_COUNT,
+    id,
+    payload
+  })
 }
