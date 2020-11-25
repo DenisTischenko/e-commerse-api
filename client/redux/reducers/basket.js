@@ -1,6 +1,7 @@
 const ADD_TO_BASKET = 'ADD_TO_BASKET'
 const UPDATE_COUNT = 'UPDATE_COUNT'
 
+
 const initialState = {
   basket: [],
   totalPrice: 0,
@@ -21,6 +22,12 @@ const sumOfItems = (basket) => {
   }
   return 0
 }
+
+const globalPriceCount = (basket) => {
+  const count = Object.keys(basket).reduce((acc, rec) => acc + basket[rec].count, 0)
+  const totalPrice = Object.keys(basket).reduce((acc, rec) => acc + basket[rec].price * basket[rec].count, 0)
+  return { count, totalPrice }
+}
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_BASKET: {
@@ -35,19 +42,39 @@ export default (state = initialState, action) => {
         },
         totalPrice: state.totalPrice + action.item.price,
         count: sumOfItems(state.basket) + 1
+
       }
     }
     case UPDATE_COUNT: {
-      return {
+      const newAmount = state.basket[action.id].count + action.payload
+      const updatedBasket = Object.keys(state.basket).reduce((acc, rec) => {
+        if (rec !== action.id) {
+          return { ...acc, [rec]: state.basket[rec] }
+        }
+        return { ...acc }
+      }, {})
+      if (newAmount <= 0) {
+        return {
+          ...state,
+          basket: updatedBasket,
+          ...globalPriceCount(updatedBasket)
+        }
+      }
+
+      const updatedState = {
         ...state,
         basket: {
           ...state.basket,
           [action.id]: {
             ...state.basket[action.id],
-            count: state.basket[action.id].count + action.payload
+            count: newAmount
           }
         }
       }
+       return {
+         ...updatedState,
+         ...globalPriceCount(updatedState.basket)
+       }
     }
     default:
       return state
@@ -55,7 +82,7 @@ export default (state = initialState, action) => {
 }
 
 export function addToBasket(item) {
-  return ({ type: ADD_TO_BASKET, item })
+  return { type: ADD_TO_BASKET, item }
 }
 
 export function updateCount(id, change) {

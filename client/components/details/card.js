@@ -15,11 +15,15 @@ const Card = (props) => {
     <div className="card_main grid bg-gray-300">
       <div className="card  bg-gray-400 rounded-lg m-4 text-center p-4">
         <img className="images w-full object-cover h-40" src={data.image} alt={data.title} />
-        <div className="title  text-3xl p-4 rounded-md text-gray-600 ">{data.title}</div>
+        <div className="title  text-2xl p-4 rounded-md text-gray-600 ">{data.title}</div>
 
-        <div className="card_title_price  grid grid-cols-2 p-4">
-          <div className="price  text-2xl px-2 justify-self-end">{actualCurrency}</div>
-          <div className="currency  text-2xl px-2 justify-self-start">{currency}</div>
+        <div className="card_title_price  grid grid-cols-2 p-4  text-2xl text-gray-700 font-bold ">
+          <div className="price  px-2 justify-self-end">
+            {actualCurrency}
+          </div>
+          <div className="currency  px-2 justify-self-start">
+            {currency}
+          </div>
         </div>
 
         <div className="button_add grid grid-cols-3">

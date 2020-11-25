@@ -11,7 +11,7 @@ const OrderCount = () => {
   return (
     <div className="OrderCount grid grid-cols-2 text-xl text-white font-bold ">
       <div className="total py-1 ">
-        Total cashe: {actualCurrency} {currency}
+        Total: {actualCurrency} {currency}
       </div>
       <div className="total_items_in_basket grid">
         <Link

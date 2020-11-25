@@ -60,17 +60,17 @@ const Basket = () => {
                     <button
                       type="button"
                       className="button__add font-bold text-2xl px-2 text-gray-700 focus:outline-none"
-                      onClick={onClick(cardItems[item], '+')}
+                      onClick={onClick(cardItems[item], '-')}
                     >
-                      +
+                      -
                     </button>
                     {typeof cardItems[item] === 'undefined' ? 0 : cardItems[item].count}
                     <button
                       type="button"
                       className="button__take font-bold text-2xl px-2 text-gray-700 focus:outline-none"
-                      onClick={onClick(cardItems[item], '-')}
+                      onClick={onClick(cardItems[item], '+')}
                     >
-                      -
+                      +
                     </button>
                   </div>
                 </div>
