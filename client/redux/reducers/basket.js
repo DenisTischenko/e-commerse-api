@@ -1,80 +1,94 @@
 const ADD_TO_BASKET = 'ADD_TO_BASKET'
 const UPDATE_COUNT = 'UPDATE_COUNT'
-
+const SORT_DATA_BY = 'SORT_DATA_BY'
 
 const initialState = {
   basket: [],
   totalPrice: 0,
-  count: 0
-}
-
-const setCount = (products) => {
-  if (typeof products !== 'undefined') {
-    const count = products.count + 1
-    return count
-  }
-  return 1
+  totalAmount: 0
 }
 
 const sumOfItems = (basket) => {
   if (typeof basket !== 'undefined') {
-    return Object.keys(basket).reduce((acc, rec) => acc + basket[rec].count, 0)
+    return basket.reduce((acc, rec) => acc + rec.count, 0)
   }
   return 0
 }
 
 const globalPriceCount = (basket) => {
-  const count = Object.keys(basket).reduce((acc, rec) => acc + basket[rec].count, 0)
-  const totalPrice = Object.keys(basket).reduce((acc, rec) => acc + basket[rec].price * basket[rec].count, 0)
-  return { count, totalPrice }
+  const totalAmount = basket.reduce((acc, rec) => acc + rec.count, 0)
+  const totalPrice = basket.reduce((acc, rec) => acc + rec.price * rec.count, 0)
+  return { totalAmount, totalPrice }
 }
+
+const setCount = (products, amount) => {
+  if (typeof products !== 'undefined') {
+    const count = products.count + amount
+    return count
+  }
+  return 1
+}
+
+const updateBasket = (basket, item, payload = 1) => {
+  const itemInBasket = basket.find((basketItem) => basketItem.id === item.id)
+  const newItem = {
+    ...(typeof itemInBasket !== 'undefined' ? itemInBasket : item),
+    count: setCount(itemInBasket, payload)
+  }
+  const upBasket = typeof itemInBasket !== 'undefined' ? [...basket] : [...basket, newItem]
+  const newBasket = upBasket.map((basketItem) => (basketItem.id === item.id ? newItem : basketItem))
+  return newBasket.filter((basketItem) => basketItem.count !== 0)
+}
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_BASKET: {
       return {
         ...state,
-        basket: {
-          ...state.basket,
-          [action.item.id]: {
-            ...action.item,
-            count: setCount(state.basket[action.item.id])
-          }
-        },
+        basket: updateBasket(state.basket, action.item),
         totalPrice: state.totalPrice + action.item.price,
-        count: sumOfItems(state.basket) + 1
-
+        totalAmount: sumOfItems(state.basket) + 1
       }
     }
     case UPDATE_COUNT: {
-      const newAmount = state.basket[action.id].count + action.payload
-      const updatedBasket = Object.keys(state.basket).reduce((acc, rec) => {
-        if (rec !== action.id) {
-          return { ...acc, [rec]: state.basket[rec] }
-        }
-        return { ...acc }
-      }, {})
-      if (newAmount <= 0) {
-        return {
-          ...state,
-          basket: updatedBasket,
-          ...globalPriceCount(updatedBasket)
-        }
-      }
-
+      const newBasket = updateBasket(state.basket, action.item, action.payload)
       const updatedState = {
         ...state,
-        basket: {
-          ...state.basket,
-          [action.id]: {
-            ...state.basket[action.id],
-            count: newAmount
+        basket: [...newBasket]
+      }
+      return {
+        ...updatedState,
+        ...globalPriceCount(updatedState.basket)
+      }
+    }
+    case SORT_DATA_BY: {
+      const sortedData = [...state.basket].sort((a, b) => {
+        if (action.name !== 'by_name') {
+          if (a.price < b.price) {
+            return -1
+          }
+          if (a.price > b.price) {
+            return 1
+          }
+          if (a.title < b.title) {
+            return -1
+          }
+          if (a.title > b.title) {
+            return 1
           }
         }
+        return 0
+      })
+      if (action.sortType === false) {
+        return {
+          ...state,
+          basket: sortedData.reverse()
+        }
       }
-       return {
-         ...updatedState,
-         ...globalPriceCount(updatedState.basket)
-       }
+      return {
+        ...state,
+        basket: sortedData
+      }
     }
     default:
       return state
@@ -85,17 +99,22 @@ export function addToBasket(item) {
   return { type: ADD_TO_BASKET, item }
 }
 
-export function updateCount(id, change) {
-  let payload = 0
-  if (change === '+') {
-    payload = 1
-  }
+export function updateCount(item, change) {
+  let payload = 1
   if (change === '-') {
     payload = -1
   }
-  return ({
+  return {
     type: UPDATE_COUNT,
-    id,
+    item,
     payload
-  })
+  }
+}
+
+export function sorting(name, sortType) {
+  return {
+    type: SORT_DATA_BY,
+    sortType,
+    name
+  }
 }

@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import express from 'express'
 import path from 'path'
 import cors from 'cors'
@@ -9,8 +11,9 @@ import React from 'react'
 import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
+// import data from '../client/redux/reducers/data'
 
-const { readFile } = require ('fs').promises
+const { readFile, writeFile } = require ('fs').promises
 
 const Root = () => ''
 
@@ -34,6 +37,25 @@ server.get('/api/v1/data', async(req, res) => {
     .then((it) => JSON.parse(it))
     .catch(() => ({ data: 'Sorry, not available' }))
     res.json(readData)
+})
+
+server.get('/api/v1/rates', async (req, res) => {
+  const rates = await axios('https://api.exchangeratesapi.io/latest?base=USD').then(
+    ({ data }) => data.rates
+  )
+     res.json(rates)
+})
+
+server.get('/api/v1/logs', async (req, res) => {
+  const logs = await readFile(`${__dirname}/data/logs.json`, { encoding: 'utf8' })
+  res.json(logs)
+})
+
+server.post('/api/v1/logs', async (req, res) => {
+  const logs = await readFile(`${__dirname}/data/logs.json`, 'Denis', { encoding: 'utf8' }).then(
+    (data) => JSON.parse(data))
+  await writeFile(`${__dirname}/data/logs.json`, JSON.stringify([req.body, ...logs, ]), { encoding: 'utf8' })
+  res.json(req.body)
 })
 
 server.use('/api/', (req, res) => {

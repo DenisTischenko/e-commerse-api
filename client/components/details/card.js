@@ -1,15 +1,15 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { addToBasket } from '../../redux/reducers/basket'
 
 const Card = (props) => {
   const { data } = props
-  const currency = useSelector((it) => it.data.currency)
+  const currency = useSelector((it) => [it.data.currency])
   const rate = useSelector((it) => it.data.rates[it.data.currency])
   const actualCurrency = (data.price * rate).toFixed(2)
   const dispatch = useDispatch()
-  const count = useSelector((it) => it.basket.basket[data.id])
-  const amount = typeof count === 'undefined' ? '' : count.count
+  const product = useSelector((it) => it.basket.basket).find((item) => item.id === data.id)
+  const amount = (typeof product === 'undefined' ? '' : product.count)
 
   return (
     <div className="card_main grid bg-gray-300">

@@ -73,18 +73,27 @@ export function getData() {
 }
 
 export function setCurrency(currency) {
-  return (dispatch) => {
-    axios('https://api.exchangeratesapi.io/latest?base=USD').then(({ data }) => {
+  return (dispatch, getState) => {
+    const store = getState()
+    axios('/api/v1/rates').then(({ data: rates }) => {
       dispatch({
         type: SET_CURRENCY,
         data: currency.toUpperCase(),
-        rates: data.rates
+        rates
       })
+    })
+    axios({
+      method: 'POST',
+      url: '/api/v1/logs',
+      data: {
+      time: +new Date(),
+      action: `Change currency from ${store.currency} to ${currency}`
+      }
     })
   }
 }
 
-export function sortBy(name, sortType) {
+export function sortBy(sortType, name) {
   return {
     type: SORT_DATA_BY,
     sortType,

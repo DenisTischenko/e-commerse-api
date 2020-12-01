@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const OrderCount = () => {
-  const { count, totalPrice } = useSelector((store) => store.basket)
+  const { totalAmount, totalPrice } = useSelector((store) => store.basket)
   const currency = useSelector((it) => it.data.currency)
   const rate = useSelector((it) => it.data.rates[it.data.currency])
   const actualCurrency = (totalPrice * rate).toFixed(2)
@@ -17,11 +17,13 @@ const OrderCount = () => {
         <Link
           id="order-count"
           className="text-gray-300 mx-4 border-2 border-solid border-gray-500 rounded-full w-16 hover:text-white hover:border-white"
-          to="/basket">{count}
+          to="/basket"
+        >
+          {totalAmount}
         </Link>
       </div>
     </div>
   )
 }
 
-export default React.memo(OrderCount)
+export default OrderCount
