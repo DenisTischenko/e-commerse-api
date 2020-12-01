@@ -6,17 +6,10 @@ import { updateCount } from '../../redux/reducers/basket'
 const Basket = () => {
   const dispatch = useDispatch()
   const cardItems = useSelector((store) => store.basket.basket)
-  const { totalPrice, count } = useSelector((store) => store.basket)
+  const { totalPrice, totalAmount } = useSelector((store) => store.basket)
   const currency = useSelector((it) => it.data.currency)
   const rate = useSelector((it) => it.data.rates[it.data.currency])
-  const actualPrice = totalPrice * rate
-
-  const onClick = (item, change) => {
-    if (change === '+') {
-      return () => dispatch(updateCount(item.id, '+'))
-    }
-      return () => dispatch(updateCount(item.id, '-'))
-  }
+  const actualPrice = (totalPrice * rate)
 
   return (
     <div className="basket_main grid">
@@ -31,27 +24,27 @@ const Basket = () => {
           <div className="Title__amount">Total</div>
         </div>
 
-        {Object.keys(cardItems).map((item) => {
+        {cardItems.map((item, index) => {
           return (
             <div key={item.id}>
               <div className="grid grid-cols-6 bg-gray-200 font-bold text-xl py-2 my-2 text-gray-700 text-center">
-                <div className="# grid place-items-center">#</div>
+                <div className="# grid place-items-center">{index + 1}</div>
 
                 <div className="Image ">
                   <img
                     className="product__image justify-self-center w-full object-cover h-40"
-                    src={cardItems[item].image}
-                    alt={cardItems[item].title}
+                    src={item.image}
+                    alt={item.title}
                   />
                 </div>
 
                 <div className="Title grid place-items-center border-r-2 border-white">
-                  <div className="product__title">{cardItems[item].title}</div>
+                  <div className="product__title">{item.title}</div>
                 </div>
 
                 <div className="Price grid place-items-center border-r-2 border-white">
                   <div className="product__price">
-                    {(cardItems[item].price * rate).toFixed(2)} {currency}
+                    {(item.price * rate).toFixed(2)} {currency}
                   </div>
                 </div>
 
@@ -60,24 +53,24 @@ const Basket = () => {
                     <button
                       type="button"
                       className="button__add font-bold text-2xl px-2 text-gray-700 focus:outline-none"
-                      onClick={onClick(cardItems[item], '+')}
+                      onClick={() => dispatch(updateCount(item, '-'))}
                     >
-                      +
+                      -
                     </button>
-                    {typeof cardItems[item] === 'undefined' ? 0 : cardItems[item].count}
+                    {typeof item === 'undefined' ? 0 : item.count}
                     <button
                       type="button"
                       className="button__take font-bold text-2xl px-2 text-gray-700 focus:outline-none"
-                      onClick={onClick(cardItems[item], '-')}
+                      onClick={() => dispatch(updateCount(item, '+'))}
                     >
-                      -
+                      +
                     </button>
                   </div>
                 </div>
 
                 <div className="Total grid place-items-center ">
                   <div className="product__total_price">
-                    {(cardItems[item].price * cardItems[item].count * rate).toFixed(2)} {currency}
+                    {(item.price * item.count * rate).toFixed(2)} {currency}
                   </div>
                 </div>
               </div>
@@ -88,7 +81,7 @@ const Basket = () => {
           Remove
         </button>
 
-        <div id="total-amount">total-amount: {count}</div>
+        <div id="total-amount">total-amount: {totalAmount}</div>
 
         <div id="total-price">
           total-price: {actualPrice.toFixed(2)} {currency}
@@ -100,4 +93,4 @@ const Basket = () => {
 
 Basket.propTypes = {}
 
-export default React.memo(Basket)
+export default Basket

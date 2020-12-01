@@ -2,13 +2,15 @@ import axios from 'axios'
 
 const GET_DATA = 'GET_DATA'
 const SET_CURRENCY = 'SET_CURRENCY'
+const SORT_DATA_BY = 'SORT_DATA_BY'
 
 const initialState = {
   listOfData: [],
   rates: {
     USD: 1
   },
-  currency: 'USD'
+  currency: 'USD',
+  sortType: ''
 }
 
 export default (state = initialState, action) => {
@@ -19,11 +21,42 @@ export default (state = initialState, action) => {
         listOfData: action.data
       }
     }
+
     case SET_CURRENCY: {
       return {
         ...state,
         currency: action.data,
         rates: action.rates
+      }
+    }
+
+    case SORT_DATA_BY: {
+      const sortedData = [...state.listOfData].sort((a, b) => {
+        if (action.name !== 'by_name') {
+          if (a.price < b.price) {
+            return -1
+          }
+          if (a.price > b.price) {
+            return 1
+          }
+          if (a.title < b.title) {
+            return -1
+          }
+          if (a.title > b.title) {
+            return 1
+          }
+        }
+        return 0
+      })
+      if (action.sortType === false) {
+        return {
+          ...state,
+          listOfData: sortedData.reverse()
+        }
+      }
+      return {
+        ...state,
+        listOfData: sortedData
       }
     }
     default:
@@ -41,15 +74,29 @@ export function getData() {
 
 export function setCurrency(currency) {
   return (dispatch, getState) => {
-    const stateCurrency = getState()
-    console.log(stateCurrency)
-    axios('https://api.exchangeratesapi.io/latest?base=USD')
-    .then(({ data }) => {
+    const store = getState()
+    axios('/api/v1/rates').then(({ data: rates }) => {
       dispatch({
         type: SET_CURRENCY,
         data: currency.toUpperCase(),
-        rates: data.rates
+        rates
       })
     })
+    axios({
+      method: 'POST',
+      url: '/api/v1/logs',
+      data: {
+      time: +new Date(),
+      action: `Change currency from ${store.currency} to ${currency}`
+      }
+    })
+  }
+}
+
+export function sortBy(sortType, name) {
+  return {
+    type: SORT_DATA_BY,
+    sortType,
+    name
   }
 }

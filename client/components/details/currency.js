@@ -39,4 +39,4 @@ const Currency = () => {
   )
 }
 
-export default React.memo(Currency)
+export default Currency
