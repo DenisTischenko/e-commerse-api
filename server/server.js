@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import express from 'express'
 import path from 'path'
 import cors from 'cors'
@@ -7,13 +5,26 @@ import bodyParser from 'body-parser'
 import sockjs from 'sockjs'
 import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
+import axios from 'axios'
 
 import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
-// import data from '../client/redux/reducers/data'
 
-const { readFile, writeFile } = require ('fs').promises
+const { readFile, writeFile } = require('fs').promises
+
+const getLogs = () => {
+  return readFile(`${__dirname}/data/logs.json`, { encoding: 'utf8' })
+    .then((data) => JSON.parse(data))
+    .catch(async () => {
+      await writeFile(`${__dirname}/data/logs.json`, '[]', { encoding: 'utf8' })
+      return []
+    })
+}
+
+const setLogs = (logs = [], body = {}) => {
+  writeFile(`${__dirname}/data/logs.json`, JSON.stringify([body, ...logs]), { encoding: 'utf8' })
+}
 
 const Root = () => ''
 
@@ -32,30 +43,29 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-server.get('/api/v1/data', async(req, res) => {
+server.get('/api/v1/data', async (req, res) => {
   const readData = await readFile(`${__dirname}/data/data.json`, { encoding: 'utf8' })
     .then((it) => JSON.parse(it))
     .catch(() => ({ data: 'Sorry, not available' }))
-    res.json(readData)
+  res.json(readData)
 })
 
 server.get('/api/v1/rates', async (req, res) => {
   const rates = await axios('https://api.exchangeratesapi.io/latest?base=USD').then(
     ({ data }) => data.rates
   )
-     res.json(rates)
+  res.json(rates)
 })
 
 server.get('/api/v1/logs', async (req, res) => {
-  const logs = await readFile(`${__dirname}/data/logs.json`, { encoding: 'utf8' })
+  const logs = await getLogs()
   res.json(logs)
 })
 
 server.post('/api/v1/logs', async (req, res) => {
-  const logs = await readFile(`${__dirname}/data/logs.json`, 'Denis', { encoding: 'utf8' }).then(
-    (data) => JSON.parse(data))
-  await writeFile(`${__dirname}/data/logs.json`, JSON.stringify([req.body, ...logs, ]), { encoding: 'utf8' })
-  res.json(req.body)
+  const logs = await getLogs()
+  await setLogs(logs, req.body)
+  res.send('Logs updated')
 })
 
 server.use('/api/', (req, res) => {

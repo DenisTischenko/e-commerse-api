@@ -75,6 +75,7 @@ export function getData() {
 export function setCurrency(currency) {
   return (dispatch, getState) => {
     const store = getState()
+    const { currency: oldCurrency } = store.data
     axios('/api/v1/rates').then(({ data: rates }) => {
       dispatch({
         type: SET_CURRENCY,
@@ -83,13 +84,13 @@ export function setCurrency(currency) {
       })
     })
     axios({
-      method: 'POST',
+      method: 'post',
       url: '/api/v1/logs',
       data: {
-      time: +new Date(),
-      action: `Change currency from ${store.currency} to ${currency}`
+        time: +new Date(),
+        action: `Change currency from ${oldCurrency} to ${currency}`
       }
-    })
+    }).catch((err) => console.log(err))
   }
 }
 

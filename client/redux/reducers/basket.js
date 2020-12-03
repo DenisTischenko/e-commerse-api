@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const ADD_TO_BASKET = 'ADD_TO_BASKET'
 const UPDATE_COUNT = 'UPDATE_COUNT'
 const SORT_DATA_BY = 'SORT_DATA_BY'
@@ -94,8 +96,15 @@ export default (state = initialState, action) => {
       return state
   }
 }
-
 export function addToBasket(item) {
+  axios({
+    method: 'post',
+    url: '/api/v1/logs',
+    data: {
+      time: +new Date(),
+      action: `add ${item.title} to the backet`
+    }
+  })
   return { type: ADD_TO_BASKET, item }
 }
 
@@ -103,6 +112,14 @@ export function updateCount(item, change) {
   let payload = 1
   if (change === '-') {
     payload = -1
+    axios({
+      method: 'post',
+      url: '/api/v1/logs',
+      data: {
+        time: +new Date(),
+        action: `remove ${item.title} from the backet`
+      }
+    })
   }
   return {
     type: UPDATE_COUNT,
@@ -111,7 +128,15 @@ export function updateCount(item, change) {
   }
 }
 
-export function sorting(name, sortType) {
+export function sortBy(name, sortType) {
+  axios({
+    method: 'post',
+    url: '/api/v1/logs',
+    data: {
+      time: +new Date(),
+      action: `sort by ${name}`
+    }
+  })
   return {
     type: SORT_DATA_BY,
     sortType,
