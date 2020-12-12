@@ -8,7 +8,7 @@ import Card from './details/card'
 import { getData } from '../redux/reducers/data'
 
 const Main = () => {
-  const listOfData = useSelector((store) => store.data.listOfData.slice(0, 16))
+  const listOfData = useSelector((store) => store.data.listOfData.slice(0, 12))
   const dispatch = useDispatch()
 
   useEffect(() => {

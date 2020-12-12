@@ -21,7 +21,7 @@ const Currency = () => {
       </button>
       <button
         type="button"
-        id="usd-button"
+        id="eur-button"
         className={buttonsStyle}
         onClick={() => currencyClick('EUR')}
       >

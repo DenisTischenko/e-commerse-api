@@ -2,14 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-
 const OrderCount = () => {
   const { totalAmount, totalPrice } = useSelector((store) => store.basket)
   const currency = useSelector((it) => it.data.currency)
   const rate = useSelector((it) => it.data.rates[it.data.currency])
   const actualCurrency = (totalPrice * rate).toFixed(2)
-
-
 
   return (
     <div className="OrderCount grid grid-cols-2 text-xl text-white font-bold ">
